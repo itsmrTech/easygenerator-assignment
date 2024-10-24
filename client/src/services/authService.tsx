@@ -8,5 +8,5 @@ export const signup = async (email: string, password: string, name: string) => {
 };
 
 export const signin = async (email: string, password: string) => {
-  return axios.post(`${API_URL}/signin`, { email, password });
+  return axios.post(`${API_URL}/auth/login`, { email, password });
 };
