@@ -1,8 +1,8 @@
 // src/App.tsx
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import SignupPage from './pages/SignupPage';
-import SigninPage from './pages/SigninPage';
-import AppPage from './pages/AppPage';
+import SignupPage from './pages/signup.page';
+import SigninPage from './pages/signin.page';
+import AppPage from './pages/app.page';
 
 function App() {
   return (

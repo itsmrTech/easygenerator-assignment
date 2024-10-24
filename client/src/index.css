@@ -186,6 +186,11 @@ body, html {
   animation-delay: 0.8s;
 }
 
+.card-auth {
+  max-width: 345px;
+  z-index: 100;
+}
+
 .panel-container {
   z-index: 1;
   background-color: rgba(255,255,255,0.3) !important;

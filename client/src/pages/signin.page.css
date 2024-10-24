@@ -1,0 +1,19 @@
+/* src/pages/SigninPage.css */
+
+/* Container for the entire page */
+.signin-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    flex-direction: column;
+  }
+  
+  /* Form container with z-index handling */
+  .form-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    z-index: 100;
+  }

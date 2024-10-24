@@ -1,8 +1,9 @@
 // src/services/authService.ts
 import axios from "axios";
 import { redirectToLogin } from "../utils/redirect.utils";
+import env from "react-dotenv";
 
-const API_URL = "http://localhost:3000/api/cms/user"; // Backend API
+const API_URL = `${env.BACKEND_URL}/api/cms/user`; // Backend API
 
 export const signup = async (email: string, password: string, name: string) => {
   const response = await axios.post(`${API_URL}/auth/register`, {

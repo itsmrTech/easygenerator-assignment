@@ -1,9 +1,10 @@
 import axios from "axios";
 import { redirectToLogin } from "../utils/redirect.utils";
-import { refreshAccessToken } from "./authService";
+import { refreshAccessToken } from "./auth.service";
 import { AxiosResponse } from "axios";
+import env from "react-dotenv";
 
-const API_URL = "http://localhost:3000/api/cms/user"; // Backend API
+const API_URL = `${env.BACKEND_URL}/api/cms/user`; // Backend API
 
 
 export const getUserProfile = async (): Promise<AxiosResponse | null> => {
