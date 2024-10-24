@@ -200,3 +200,18 @@ body, html {
   display: block;
   margin-bottom: 1rem;
 }
+
+a {
+  color: #393939;
+  border-bottom: #393939 2px dashed;
+  text-decoration: none;
+}
+a:hover {
+  color: #7c7c7c;
+  border-bottom: #7c7c7c 2px solid;
+  text-decoration: none;
+}
+.undercard-link {
+  margin-top:10px;
+  font-size:smaller;
+}

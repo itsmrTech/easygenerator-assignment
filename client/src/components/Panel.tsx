@@ -4,6 +4,7 @@ import React from "react";
 type PanelProps = {
   name: string;
   profilePicture: string;
+  onSignout: () => void;
 };
 const Panel = (props: PanelProps) => {
   const genGreetings = (name: string) => {
@@ -26,7 +27,10 @@ const Panel = (props: PanelProps) => {
         <h2>Welcome to the application.</h2>
       </CardContent>
       <CardActions>
-        <Button size="small" color="error" > Sign Out </Button>
+        <Button size="small" color="error" onClick={()=>{
+            console.log("cl")
+            props.onSignout();
+        }} > Sign Out </Button>
       </CardActions>
     </Card>
   );

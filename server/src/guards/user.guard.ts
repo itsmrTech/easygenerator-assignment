@@ -8,7 +8,6 @@ export class UserGuard implements CanActivate {
         private readonly userAuthInternalService: UserAuthInternalService
     ) {}
 
-    // MOCK
     async canActivate(context: ExecutionContext): Promise<boolean> {
         
         const request = context.switchToHttp().getRequest();
@@ -23,8 +22,6 @@ export class UserGuard implements CanActivate {
             await this.userAuthInternalService.verifyAccessToken(token);
         if (!verificationResult.verified) return false;
         request.user = verificationResult.user;
-        // check if the user is active:
-        if (request.user.status !== UserStatusEnum.ACTIVE) return false;
         return true;
     }
 }

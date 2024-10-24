@@ -4,10 +4,11 @@ import { IGenerateAccessTokenServiceInput, IGenerateTokenServiceOutput, IGenerat
 import { UserToken } from "src/schemas/user.token.schema";
 import { JwtService } from "@nestjs/jwt";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model } from "mongoose";
+import { Model, Types } from "mongoose";
 import { User } from "src/schemas/user.schema";
 import { UserTokenTypeEnum } from "src/enums/user.token.schema.enum";
 import { calculateExpirationDate } from "src/utils/user.utils";
+import { toMongoId } from "src/utils/database.utils";
 
 @Injectable()
 export class UserAuthInternalService {
@@ -96,11 +97,13 @@ export class UserAuthInternalService {
             const decoded = this.jwtService.verify(token, {
                 secret: AppConfig.getTokenConfig().refreshTokenSecret,
             });
+            console.log(decoded)
             const userToken = await this.userTokenModel
                 .findOne({
-                    user: decoded.sub,
+                    user: toMongoId(decoded.sub),
                     token,
                     type: UserTokenTypeEnum.REFRESH,
+                    expiredAt: { $gt: new Date() },
                 })
                 .populate('user').lean();
             if (!userToken) {

@@ -8,13 +8,21 @@ import {
     Card,
     CardContent,
     Typography,
+    Divider,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as authService from "../services/authService";
 import { FormStatusEnum } from "../types/enums";
 import InteractiveBackground from "../components/InteractiveBackground";
 
 const SigninPage = () => {
+    useEffect(() => {
+
+        // check if user is already logged in
+        if(localStorage.getItem("accessToken")) {
+            window.location.href = "/app";
+        }
+    },[])
     const [formStatus, setFormStatus] = useState<FormStatusEnum>(FormStatusEnum.Idle);
     const formik = useFormik({
         initialValues: { email: "", password: "" },
@@ -50,10 +58,18 @@ const SigninPage = () => {
                 justifyContent: "center",
                 alignItems: "center",
                 minHeight: "100vh",
+                flexDirection: "column",
             }}
         >
             <InteractiveBackground formStatus={formStatus} />
             <div className={`welcome-text ${formStatus === FormStatusEnum.Submitted ? "animate" : ""}`}>Welcome Back</div>
+            <Container sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                flexDirection: "column",
+                zIndex: 100,
+            }}>
             <Card sx={{ maxWidth: 345, zIndex: 100 }} className={`card-auth ${formStatus === FormStatusEnum.Submitted ? "animate" : ""}`}>
                 <CardContent>
                     <Typography gutterBottom variant="h5" component="div">
@@ -83,12 +99,15 @@ const SigninPage = () => {
                             error={formik.touched.password && Boolean(formik.errors.password)}
                             helperText={formik.touched.password && formik.errors.password}
                         />
-                        <Button type="submit" variant="contained" color="primary">
+                        <Button sx={{marginTop:"20px"}} type="submit" variant="contained" color="primary">
                             Sign In
                         </Button>
                     </form>
                 </CardContent>
             </Card>
+            <a href="/signup" className="undercard-link">
+                Don't have an account? Sign up
+            </a></Container>
         </Container>
     );
 };

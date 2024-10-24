@@ -126,14 +126,14 @@ export class UserAuthService {
             throw new HttpException('Email or password is incorrect', HttpStatus.BAD_REQUEST);
 
         // 3. Generate access token.
-        const accessToken = await this.generateAccessToken({
+        const accessToken = await this.userAuthInternalService.generateAccessToken({
             sub: user.id,
             aud: TokenAudienceEnum.WEB,
             iss: TokenIssuerEnum.WEB,
             role: RoleEnum.USER,
             iat: Date.now(),
         });
-        const refreshToken = await this.generateAccessToken({
+        const refreshToken = await this.userAuthInternalService.generateRefreshToken({
             sub: user.id,
             aud: TokenAudienceEnum.WEB,
             iss: TokenIssuerEnum.WEB,
@@ -149,7 +149,7 @@ export class UserAuthService {
                 email: user.email,
                 name: user.name,
             },
-            token: {
+            tokens: {
                 accessToken: {
                     token: accessToken.token,
                     expiresAt: accessToken.expiresAt,

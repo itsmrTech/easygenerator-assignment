@@ -12,7 +12,6 @@ export class UserRefreshGuard implements CanActivate {
     async canActivate(context: ExecutionContext): Promise<boolean> {
         const request = context.switchToHttp().getRequest();
         const authorizationHeader = request.headers.authorization;
-
         if (!authorizationHeader) {
             return false;
         }
@@ -24,8 +23,6 @@ export class UserRefreshGuard implements CanActivate {
         request.user = verificationResult.user;
     
 
-        // check if the user is active:
-        if (request.user.status !== UserStatusEnum.ACTIVE ) return false;
        return true;
     }
 }

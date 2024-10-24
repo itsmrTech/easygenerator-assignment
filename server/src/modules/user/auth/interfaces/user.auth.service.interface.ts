@@ -57,7 +57,7 @@ export interface ILoginUserServiceOutput {
         email: string;
         name: string;
     };
-    token: {
+    tokens: {
         accessToken: {
             token: string;
             expiresAt: Date;
