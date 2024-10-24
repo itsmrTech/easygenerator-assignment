@@ -54,7 +54,7 @@ An authentication module that allows users to sign up and sign in.
 # APIs Document
 
 All the APIs are well documented, including schemas and examples using Swagger. You can find the Swagger document by opening `[BACKEND_URL]/docs`. Remember that username and password are defined in the `.env` file.
-To review it online you can visit [here](https://easygenerator-assignment.onrender.com/docs). (If you’ve been asked for authentication: username: `*admin*`, password: `admin` )
+To review it online you can visit [here](https://easygenerator-assignment.onrender.com/docs). (If you’ve been asked for authentication: username: `admin`, password: `admin` )
 
 # File Structure
 
