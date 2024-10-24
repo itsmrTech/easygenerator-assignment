@@ -11,3 +11,154 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body, html {
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+  width: 100%;
+}
+
+/* Outline-Only Background (Low Opacity) */
+.background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('../public/outline_bg.png') repeat center center;
+  /* background-size: cover; */
+  background-size:30vw;
+  /* opacity: 0.3; */
+  transition: opacity 1.5s ease-in-out;
+}
+
+/* Colorful Background (Initially Hidden) */
+.background-colorful {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('../public/bg.png') repeat center center;
+  background-size:30vw;
+  /* background-size: cover; */
+  clip-path: circle(0% at 50% 50%);
+  -webkit-clip-path: circle(0% at 50% 50%);
+  transition: clip-path 2s ease-in-out, -webkit-clip-path 2s ease-in-out;
+}
+.background-colorful.animate-reveal{
+  animation:reveal 2s forwards;
+}
+.background-colorful.animate-pulse{
+  animation:pulse 2s infinite;
+}
+.background-colorful.animate-red {
+  background: url('../public/error_bg.png') repeat center center;
+  animation: error 4s forwards;
+  background-size:30vw;
+
+}
+/* Keyframes for the animation */
+@keyframes reveal {
+  0% {
+    clip-path: circle(0% at 50% 50%);
+    -webkit-clip-path: circle(0% at 50% 50%);
+  }
+  100% {
+    clip-path: circle(150% at 50% 50%);
+    -webkit-clip-path: circle(150% at 50% 50%);
+  }
+}
+@keyframes error {
+  0% {
+    clip-path: circle(0% at 50% 50%);
+    -webkit-clip-path: circle(0% at 50% 50%);
+  }
+  70% {
+    clip-path: circle(100% at 50% 50%);
+    -webkit-clip-path: circle(150% at 50% 50%);
+  }
+  100% {
+    clip-path: circle(0% at 50% 50%);
+    -webkit-clip-path: circle(0% at 50% 50%);
+  }
+}
+@keyframes pulse {
+  0% {
+    clip-path: circle(0% at 50% 50%);
+    -webkit-clip-path: circle(0% at 50% 50%);
+    opacity:1;
+    filter: blur(0px);
+  }
+  30% {
+    
+    filter: blur(0px);
+
+  }
+  100% {
+    clip-path: circle(30% at 50% 50%);
+    -webkit-clip-path: circle(50% at 50% 50%);
+    opacity: 0;
+    opacity: 0;
+    filter: blur(20px);
+  }
+}
+@keyframes card-fade {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: rotate3d(1, 2, 1, 20deg) scale(2);
+    filter: blur(10px);
+  }
+}
+@keyframes text-fade {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate3d(1, 1, 1, -10deg) scale(0.7);
+
+  }
+  1%{
+    opacity: 1;
+
+  }
+  
+  100% {
+    transform: translate(-50%, -50%) rotate3d(1, 2, 1, 20deg) scale(10);
+
+  }
+}
+
+.card-auth.animate{
+  animation: card-fade 3s forwards ease-in;
+  animation-delay: 0.8s;
+}
+.welcome-text {
+  font-size: 5rem;
+  font-weight: 700;
+  color: #ffffff;
+  text-align: center;
+  margin-bottom: 1rem;
+  z-index:1;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: none;;
+}
+.welcome-text.animate {
+  display: block;;
+  animation: text-fade 320s forwards cubic-bezier(.07,.77,.45,.65);
+  animation-delay: 0.8s;
+}
