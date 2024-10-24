@@ -20,6 +20,7 @@ import { UserTokenTypeEnum } from 'src/enums/user.token.schema.enum';
 import { RoleEnum, TokenAudienceEnum, TokenIssuerEnum } from 'src/core/enums';
 import { DateTime } from 'luxon';
 import { UserAuthInternalService } from './user.auth.internal.service';
+import { comparePasswordHash } from 'src/utils/user.utils';
 
 @Injectable()
 export class UserAuthService {
@@ -94,32 +95,66 @@ export class UserAuthService {
         };
     }
 
-    // MOCK
     async loginUser(
         input: ILoginUserServiceInput
     ): Promise<ILoginUserServiceOutput> {
-        /* DEV NOTES:
-        1. Check if user exists. If not, throw error.
-        2. Check if password is correct. If not, throw error.
-        3. Generate access token.
-        4. Generate and save refresh token.
-        5. Return response.
-        */
+       
+
+        // 1. Check if user exists. If not, throw error.
+        const { user } = await this.userInternalService.getUserByEmail({
+            email: input.email,
+        });
+        if (!user)
+            throw new HttpException('Email or password is incorrect', HttpStatus.BAD_REQUEST);
+
+        // 2. Check if password is correct. If not, throw error.
+        const userCredentials = await this.userCredentialsModel
+            .findOne({
+                user: user.id,
+            })
+            .lean();
+        if (!userCredentials)
+            throw new HttpException('Email or password is incorrect', HttpStatus.BAD_REQUEST);
+
+        const isPasswordMatched = await comparePasswordHash(
+            input.password,
+            userCredentials.password
+        );
+        if (!isPasswordMatched)
+            throw new HttpException('Email or password is incorrect', HttpStatus.BAD_REQUEST);
+
+        // 3. Generate access token.
+        const accessToken = await this.generateAccessToken({
+            sub: user.id,
+            aud: TokenAudienceEnum.WEB,
+            iss: TokenIssuerEnum.WEB,
+            role: RoleEnum.USER,
+            iat: Date.now(),
+        });
+        const refreshToken = await this.generateAccessToken({
+            sub: user.id,
+            aud: TokenAudienceEnum.WEB,
+            iss: TokenIssuerEnum.WEB,
+            role: RoleEnum.USER,
+            iat: Date.now(),
+        });
+
+
 
         return {
             user: {
-                id: new Types.ObjectId(),
-                email: 'john.doe@gmail.com',
-                phone: '+1234567890',
+                id: user.id,
+                email: user.email,
+                name: user.name,
             },
             token: {
                 accessToken: {
-                    token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ5b3V0dWJlciIsImF1ZCI6IndlYiIsImlhdCI6MTYyMzIwNzQwMCwiaXNzIjoiV0VCIiwicm9sZSI6IlVTRVIifQ.',
-                    expiresAt: DateTime.now().plus({ days: 1 }).toJSDate(),
+                    token: accessToken.token,
+                    expiresAt: accessToken.expiresAt,
                 },
                 refreshToken: {
-                    token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ5b3V0dWJlciIsImF1ZCI6IndlYiIsImlhdCI6MTYyMzIwNzQwMCwiaXNzIjoiV0VCIiwicm9sZSI6IlVTRVIifQ.',
-                    expiresAt: DateTime.now().plus({ days: 30 }).toJSDate(),
+                    token: refreshToken.token,
+                    expiresAt: refreshToken.expiresAt,
                 },
             },
         };

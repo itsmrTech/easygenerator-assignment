@@ -96,7 +96,7 @@ export class UserAuthController {
 
     @Post('login')
     @ApiQuery(apiLanguageQuery)
-    @ApiOperation({ summary: '🧪 Login a user' })
+    @ApiOperation({ summary: 'Login a user' })
     async loginUser(
         @Body() body: LoginUserReqDto,
         @Query('language') language = this.defaultLanguage
@@ -112,7 +112,6 @@ export class UserAuthController {
             statusCode: HttpStatus.OK,
             language,
             i18n: this.i18nService,
-            mock:true,
         });
     }
 }

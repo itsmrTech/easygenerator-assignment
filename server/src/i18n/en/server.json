@@ -10,6 +10,12 @@
                     "code": "REGISTER_SUCCESS",
                     "message": "User registered successfully."
                 }
+            },
+            "login":{
+                "success": {
+                    "code": "LOGIN_SUCCESS",
+                    "message": "User logged in successfully."
+                }
             }
         }
     }

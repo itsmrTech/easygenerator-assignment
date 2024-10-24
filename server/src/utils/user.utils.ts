@@ -25,6 +25,17 @@ export const generatePasswordHash = async (
     return `${hash.toString('hex')}:${salt}`;
 };
 
+export const comparePasswordHash = async (
+    password: string,
+    hash: string
+): Promise<boolean> => {
+    const [hashedPassword, salt] = hash.split(':');
+    const keyLength = 32;
+
+    const hashBuffer = (await scryptAsync(password, salt, keyLength)) as Buffer;
+    return hashBuffer.toString('hex') === hashedPassword;
+};
+
 /**
  *
  * @param duration  could be 1d, 1h, 1m, 1s

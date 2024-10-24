@@ -55,7 +55,7 @@ export interface ILoginUserServiceOutput {
     user: {
         id: Types.ObjectId;
         email: string;
-        phone: string;
+        name: string;
     };
     token: {
         accessToken: {
