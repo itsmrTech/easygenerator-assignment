@@ -47,7 +47,7 @@ export class UserAuthController {
     @Post('register')
     @ApiQuery(apiLanguageQuery)
     @ApiOperation({ summary: 'Registration Step 1: Register a user' })
-    async registerUser(
+    async signUpUser(
         @Body() body: SignUpUserReqDto,
         @Query('language') language = this.defaultLanguage
     ) {
@@ -63,7 +63,7 @@ export class UserAuthController {
             statusCode: HttpStatus.OK,
             language,
             i18n: this.i18nService,
-            // dto: RegisterUserResDto,
+            dto: SignUpUserResDto,
         });
     }
 

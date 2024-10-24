@@ -19,6 +19,7 @@ import { UserCredentials } from 'src/schemas/user.credentials.schema';
 import { UserTokenTypeEnum } from 'src/enums/user.token.schema.enum';
 import { RoleEnum, TokenAudienceEnum, TokenIssuerEnum } from 'src/core/enums';
 import { DateTime } from 'luxon';
+import { UserAuthInternalService } from './user.auth.internal.service';
 
 @Injectable()
 export class UserAuthService {
@@ -28,38 +29,68 @@ export class UserAuthService {
         private readonly userModel: Model<User>,
         @InjectModel(UserCredentials.name)
         private readonly userCredentialsModel: Model<UserCredentials>,
-        private readonly userInternalService: UserInternalService
+        private readonly userInternalService: UserInternalService,
+        private readonly userAuthInternalService: UserAuthInternalService
     ) {}
 
-    // MOCK
     async signUpUser(
         input: ISignUpUserServiceInput
     ): Promise<ISignUpUserServiceOutput> {
-        /* DEV NOTES:
-        1. Check if user with same email exists. If yes, throw error.
-        2. Create user.
-        3. Create user credentials.
-        4. Generate access token.
-        5. Generate and save refresh token.
-        6. Return response.
-        */
+        
 
+        //1. Check if user with same email exists. If yes, throw error.
+        const {user} = await this.userInternalService.getUserByEmail({
+            email: input.email,
+        });
+        if(user)
+            throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
+
+        //2. Create user.
+        const newUser = new this.userModel({
+            email: input.email,
+            name: input.name,
+        });
+        
+        //3. Create user credentials.
+        const newUserCredentials = new this.userCredentialsModel({
+            user: newUser._id,
+            password: input.password,
+            tokenType: UserTokenTypeEnum.REFRESH,
+        });
+        await newUser.save();
+        await newUserCredentials.save();
+
+        //4. Generate access token.
+        const accessToken = await this.userAuthInternalService.generateAccessToken({
+            sub: newUser._id,
+            aud: TokenAudienceEnum.WEB,
+            iss: TokenIssuerEnum.WEB,
+            role: RoleEnum.USER,
+            iat: Date.now(),
+        });
+        const refreshToken = await this.userAuthInternalService.generateRefreshToken({
+            sub: newUser._id,
+            aud: TokenAudienceEnum.WEB,
+            iss: TokenIssuerEnum.WEB,
+            role: RoleEnum.USER,
+            iat: Date.now(),
+        });
         return {
-            user: {
-                id: new Types.ObjectId(),
-                email: input.email,
-                name: input.name,
+            user:{
+                id: newUser._id,
+                email: newUser.email,
+                name: newUser.name,
             },
-            token: {
-                accessToken: {
-                    token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ5b3V0dWJlciIsImF1ZCI6IndlYiIsImlhdCI6MTYyMzIwNzQwMCwiaXNzIjoiV0VCIiwicm9sZSI6IlVTRVIifQ.',
-                    expiresAt: DateTime.now().plus({ days: 1 }).toJSDate(),
+            tokens:{
+                accessToken:{
+                    token: accessToken.token,
+                    expiresAt: accessToken.expiresAt,
                 },
-                refreshToken: {
-                    token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ5b3V0dWJlciIsImF1ZCI6IndlYiIsImlhdCI6MTYyMzIwNzQwMCwiaXNzIjoiV0VCIiwicm9sZSI6IlVTRVIifQ.',
-                    expiresAt: DateTime.now().plus({ days: 30 }).toJSDate(),
+                refreshToken:{
+                    token: refreshToken.token,
+                    expiresAt: refreshToken.expiresAt,
                 },
-            },
+            }
         };
     }
 

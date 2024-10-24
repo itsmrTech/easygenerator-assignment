@@ -10,6 +10,7 @@ import {
 } from 'src/schemas/user.credentials.schema';
 import { JwtModule } from '@nestjs/jwt';
 import { UserToken, UserTokenSchema } from 'src/schemas/user.token.schema';
+import { UserAuthInternalService } from './services/user.auth.internal.service';
 
 @Module({
     imports: [
@@ -28,6 +29,6 @@ import { UserToken, UserTokenSchema } from 'src/schemas/user.token.schema';
         JwtModule.register({}),
     ],
     controllers: [UserAuthController],
-    providers: [UserAuthService,],
+    providers: [UserAuthService,UserAuthInternalService],
 })
 export class UserAuthModule {}

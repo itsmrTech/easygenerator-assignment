@@ -15,9 +15,27 @@ import {
 export class UserInternalService {
     constructor(
         @InjectModel(User.name)
-        private readonly userModel: Model<User>,
+        private readonly userModel: Model<User>
     ) {}
 
-
-   
+    async getUserByEmail(
+        input: IGetUserByEmailServiceInput
+    ): Promise<IGetUserByEmailServiceOutput> {
+        const user = await this.userModel
+            .findOne({
+                email: input.email,
+            })
+            .lean();
+        return {
+            user: user
+                ? {
+                      id: user._id,
+                      email: user.email,
+                      name: user.name,
+                      createdAt: user.createdAt,
+                      updatedAt: user.updatedAt,
+                  }
+                : null,
+        };
+    }
 }

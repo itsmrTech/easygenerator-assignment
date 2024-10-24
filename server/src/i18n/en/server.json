@@ -4,6 +4,13 @@
         "message": "Server is online."
     },
     "user":{
-        
+        "auth":{
+            "register":{
+                "success": {
+                    "code": "REGISTER_SUCCESS",
+                    "message": "User registered successfully."
+                }
+            }
+        }
     }
 }

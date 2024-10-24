@@ -22,6 +22,6 @@ export interface IGetUserByIdServiceInput {
 }
 
 export interface IGetUserByIdServiceOutput {
-    user: IUser;
+    user?: IUser;
 }
 

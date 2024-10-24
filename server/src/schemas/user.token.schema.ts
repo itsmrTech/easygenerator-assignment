@@ -25,6 +25,9 @@ export class UserToken {
     @Prop()
     updatedAt: Date;
 
+    @Prop({type:Date, required:true})
+    expiredAt: Date;
+
     @Prop({
         type: String,
         enum: UserTokenTypeEnum,

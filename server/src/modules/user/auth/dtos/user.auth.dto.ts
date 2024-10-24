@@ -22,11 +22,32 @@ class SignUpUserResUserDto {
     name: string;
 }
 
+export class SignUpUserResTokenDto{
+    @Expose()
+    token: string;
+
+    @Expose()
+    expiresAt: Date;
+}
+export class SignUpUserResTokensDto {
+    @Expose()
+    @Type(() => SignUpUserResTokenDto)
+    accessToken: SignUpUserResTokenDto;
+
+    @Expose()
+    @Type(() => SignUpUserResTokenDto)
+    refreshToken: SignUpUserResTokenDto;
+}
+
 export class SignUpUserResDto {
 
     @Expose()
     @Type(() => SignUpUserResUserDto)
     user: SignUpUserResUserDto;
+
+    @Expose()
+    @Type(() => SignUpUserResTokensDto)
+    tokens: SignUpUserResTokensDto;
 }
 
 export class SignUpUserReqDto {
