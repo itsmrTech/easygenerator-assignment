@@ -16,7 +16,13 @@
                     "code": "LOGIN_SUCCESS",
                     "message": "User logged in successfully."
                 }
-            }
+            },
+            "logout":{
+                "success": {
+                    "code": "LOGOUT_SUCCESS",
+                    "message": "User logged out successfully."
+                }
+            },
         }
     }
 }

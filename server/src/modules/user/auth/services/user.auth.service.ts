@@ -9,6 +9,8 @@ import {
     IGenerateTokenServiceOutput,
     ILoginUserServiceInput,
     ILoginUserServiceOutput,
+    ILogoutUserServiceInput,
+    ILogoutUserServiceOutput,
     IRegisterUserBasicInfoServiceInput,
     IRegisterUserBasicInfoServiceOutput,
     ISignUpUserServiceInput,
@@ -170,6 +172,23 @@ export class UserAuthService {
         return {
             token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ5b3V0dWJlciIsImF1ZCI6IndlYiIsImlhdCI6MTYyMzIwNzQwMCwiaXNzIjoiV0VCIiwicm9sZSI6IlVTRVIifQ.',
             expiresAt: DateTime.now().plus({ days: 1 }).toJSDate(),
+        };
+    }
+
+    async logoutUser(
+        input: ILogoutUserServiceInput
+    ): Promise<ILogoutUserServiceOutput> {
+       
+
+        // 1. Delete refresh token from database.
+        await this.userCredentialsModel.deleteOne({
+            user: input.userId,
+            tokenType: UserTokenTypeEnum.REFRESH,
+            token: input.refreshToken,
+        });
+
+        return {
+            done: true,
         };
     }
 }

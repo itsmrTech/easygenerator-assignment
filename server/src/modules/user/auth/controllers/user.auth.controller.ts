@@ -2,6 +2,7 @@ import { I18nService } from 'nestjs-i18n';
 import {
     Body,
     Controller,
+    Delete,
     HttpStatus,
     Inject,
     Post,
@@ -112,6 +113,29 @@ export class UserAuthController {
             statusCode: HttpStatus.OK,
             language,
             i18n: this.i18nService,
+        });
+    }
+
+    @Delete('logout')
+    @ApiQuery(apiLanguageQuery)
+    @ApiOperation({ summary: 'Logout a user' })
+    @ApiBearerAuth()
+    @UseGuards(UserRefreshGuard)
+    async logoutUser(
+        @Query('language') language = this.defaultLanguage,
+        @Req() req: ILoggedInUserRequest
+    ) {
+        const result= await this.userAuthService.logoutUser({
+            refreshToken: req.headers['authorization'].split(' ')[1],
+            userId: req.user._id,
+        });
+
+        return genResp({
+            data: result,
+            responseName: 'server.user.auth.logout.success',
+            statusCode: HttpStatus.OK,
+            language,
+            i18n: this.i18nService
         });
     }
 }

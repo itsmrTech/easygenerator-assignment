@@ -68,3 +68,12 @@ export interface ILoginUserServiceOutput {
         };
     };
 }
+
+export interface ILogoutUserServiceInput {
+    refreshToken: string;
+    userId: Types.ObjectId;
+
+}
+export interface ILogoutUserServiceOutput {
+    done: boolean;
+}
