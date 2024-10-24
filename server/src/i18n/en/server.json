@@ -23,6 +23,12 @@
                     "message": "User logged out successfully."
                 }
             }
+        },
+        "profile":{
+            "success":{
+                "code": "PROFILE_SUCCESS",
+                "message": "User profile retrieved successfully."
+            }
         }
     }
 }

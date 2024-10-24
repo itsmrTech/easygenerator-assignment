@@ -28,10 +28,11 @@ import { UserAuthCronService } from './services/user.auth.cron.service';
             },
         ]),
         ScheduleModule.forRoot(),
-        UserModule,
+        forwardRef(()=>UserModule),
         JwtModule.register({}),
     ],
     controllers: [UserAuthController],
     providers: [UserAuthService, UserAuthInternalService, UserAuthCronService],
+    exports: [UserAuthInternalService],
 })
 export class UserAuthModule {}

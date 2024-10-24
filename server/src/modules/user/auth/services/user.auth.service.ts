@@ -165,14 +165,7 @@ export class UserAuthService {
     async generateAccessToken(
         input: IGenerateAccessTokenServiceInput
     ): Promise<IGenerateTokenServiceOutput> {
-        /* DEV NOTES:
-        1. Generate access token.
-        2. Return response.
-        */
-        return {
-            token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ5b3V0dWJlciIsImF1ZCI6IndlYiIsImlhdCI6MTYyMzIwNzQwMCwiaXNzIjoiV0VCIiwicm9sZSI6IlVTRVIifQ.',
-            expiresAt: DateTime.now().plus({ days: 1 }).toJSDate(),
-        };
+        return this.userAuthInternalService.generateAccessToken(input);
     }
 
     async logoutUser(
