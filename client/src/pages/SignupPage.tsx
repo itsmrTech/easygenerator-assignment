@@ -8,6 +8,7 @@ import {
   Card,
   CardContent,
   Typography,
+  Alert,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import * as authService from "../services/authService";
@@ -22,6 +23,7 @@ const SignupPage = () => {
             window.location.href = "/app";
         }
     },[])
+    const [error, setError] = useState<string|null>(null);
 
   const [formStatus, setFormStatus] = useState<FormStatusEnum>(FormStatusEnum.Idle);
   const formik = useFormik({
@@ -39,6 +41,7 @@ const SignupPage = () => {
     onSubmit: (values) => {
       console.log("Signup values:", values);
         setFormStatus(FormStatusEnum.Submitting)
+        setError(null);
         authService.signup(values.email, values.password, values.name).then((res)=>{
             console.log("Signup response:", res);
             setFormStatus(FormStatusEnum.Submitted)
@@ -47,7 +50,8 @@ const SignupPage = () => {
             },7000)
         }).catch((err)=>{
             console.log("Signup error:", err);
-            setFormStatus(FormStatusEnum.Error)
+            setFormStatus(FormStatusEnum.Error);
+            setError(err?.response?.data?.message || "An error occurred");
         });
         
     },
@@ -77,6 +81,9 @@ const SignupPage = () => {
           <Typography gutterBottom variant="h5" component="div">
             Let us know you more
           </Typography>
+          {error?<Alert variant="standard" severity="error">
+            {error}
+            </Alert>:null}
           <form onSubmit={formik.handleSubmit}>
             <TextField
               fullWidth
