@@ -11,14 +11,11 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import * as authService from "../services/authService";
+import { FormStatusEnum } from "../types/enums";
+import InteractiveBackground from "../components/InteractiveBackground";
 
 const SignupPage = () => {
-  enum FormStatusEnum {
-    Idle,
-    Submitting,
-    Submitted,
-    Error,
-  }
+  
 
   const [formStatus, setFormStatus] = useState<FormStatusEnum>(FormStatusEnum.Idle);
   const formik = useFormik({
@@ -50,18 +47,7 @@ const SignupPage = () => {
     },
   });
 
-  const setAnimation=(status:FormStatusEnum)=>{
-    switch(status){
-        case FormStatusEnum.Submitted:
-            return "animate-reveal";
-        case FormStatusEnum.Submitting:
-            return "animate-pulse";
-        case FormStatusEnum.Error:
-            return "animate-red";
-        default:
-            return "";
-        }
-  }
+
   return (
     <Container
       sx={{
@@ -71,13 +57,7 @@ const SignupPage = () => {
         minHeight: "100vh",
       }}
     >
-      <div className="background"></div>
-
-      <div
-        className={`background-colorful ${
-          setAnimation(formStatus)
-        } `}
-      ></div>
+      <InteractiveBackground formStatus={formStatus}/>
     <div className={`welcome-text ${formStatus===FormStatusEnum.Submitted?"animate":""}`}>Welcome </div>
       
       <Card sx={{ maxWidth: 345, zIndex: 100 }} className={`card-auth ${formStatus===FormStatusEnum.Submitted?"animate":""}`}>
