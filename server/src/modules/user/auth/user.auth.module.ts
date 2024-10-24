@@ -11,6 +11,8 @@ import {
 import { JwtModule } from '@nestjs/jwt';
 import { UserToken, UserTokenSchema } from 'src/schemas/user.token.schema';
 import { UserAuthInternalService } from './services/user.auth.internal.service';
+import { ScheduleModule } from '@nestjs/schedule';
+import { UserAuthCronService } from './services/user.auth.cron.service';
 
 @Module({
     imports: [
@@ -22,13 +24,14 @@ import { UserAuthInternalService } from './services/user.auth.internal.service';
             },
             {
                 name: UserToken.name,
-                schema: UserTokenSchema
-            }
+                schema: UserTokenSchema,
+            },
         ]),
+        ScheduleModule.forRoot(),
         UserModule,
         JwtModule.register({}),
     ],
     controllers: [UserAuthController],
-    providers: [UserAuthService,UserAuthInternalService],
+    providers: [UserAuthService, UserAuthInternalService, UserAuthCronService],
 })
 export class UserAuthModule {}

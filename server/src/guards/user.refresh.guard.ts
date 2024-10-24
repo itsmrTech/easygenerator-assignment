@@ -1,26 +1,31 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { UserStatusEnum } from 'src/enums/user.schema.enum';
+import { UserAuthInternalService } from 'src/modules/user/auth/services/user.auth.internal.service';
+import { UserAuthService } from 'src/modules/user/auth/services/user.auth.service';
 
 @Injectable()
 export class UserRefreshGuard implements CanActivate {
-    constructor() {}
+    constructor(
+        private readonly userAuthInternalService: UserAuthInternalService
+    ) {}
 
-    // MOCK
     async canActivate(context: ExecutionContext): Promise<boolean> {
-        /*
-        DEV NOTES:
-        - Extracts the request object from the execution context.
-        - Retrieves the `Authorization` header from the request.
-        - If the `Authorization` header is missing, access is denied.
-        - Extracts the token from the `Authorization` header by removing the 'Bearer ' prefix.
-        - Verifies the token using `userAuthService.verifyRefreshToken`.
-        - Logs the verification result for debugging purposes.
-        - If the token is not verified, access is denied.
-        - Attaches the verified user to the request object.
-        - Checks if the user status is either `ACTIVE` or `INACTIVE` and ensures the user is not blocked.
-        - If the user status is not valid or the user is blocked, access is denied.
-        - If all checks pass, access is granted.
-        */
+        const request = context.switchToHttp().getRequest();
+        const authorizationHeader = request.headers.authorization;
+
+        if (!authorizationHeader) {
+            return false;
+        }
+
+        const token = authorizationHeader.replace('Bearer ', '');
+        const verificationResult =
+            await this.userAuthInternalService.verifyRefreshToken(token);
+        if (!verificationResult.verified) return false;
+        request.user = verificationResult.user;
+    
+
+        // check if the user is active:
+        if (request.user.status !== UserStatusEnum.ACTIVE ) return false;
        return true;
     }
 }

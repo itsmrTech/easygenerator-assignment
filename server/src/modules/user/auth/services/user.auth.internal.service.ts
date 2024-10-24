@@ -14,7 +14,9 @@ export class UserAuthInternalService {
     constructor(
         private readonly jwtService: JwtService,
         @InjectModel(UserToken.name)
-        private readonly userTokenModel: Model<UserToken>
+        private readonly userTokenModel: Model<UserToken>,
+        @InjectModel(User.name)
+        private readonly userModel: Model<User>,
     ) {}
 
     generateAccessToken(
@@ -61,5 +63,52 @@ export class UserAuthInternalService {
         });
         await newToken.save();
         return { token, expiresAt: new Date(expiredAt) };
+    }
+
+    async deleteExpiredRefreshTokens(): Promise<void> {
+        await this.userTokenModel.deleteMany({
+            expiredAt: { $lt: new Date() },
+        });
+    }
+
+    async verifyAccessToken(token: string) {
+        try {
+            const decoded = this.jwtService.verify(token, {
+                secret: AppConfig.getTokenConfig().accessTokenSecret,
+            });
+            
+            const user= await this.userModel.findOne({
+                _id: decoded.sub,
+            
+            })
+            if (!user ) {
+                return { verified: false };
+            }
+            
+            return { verified: true, user, };
+        } catch (error) {
+            return { verified: false };
+        }
+    }
+
+    async verifyRefreshToken(token: string) {
+        try {
+            const decoded = this.jwtService.verify(token, {
+                secret: AppConfig.getTokenConfig().refreshTokenSecret,
+            });
+            const userToken = await this.userTokenModel
+                .findOne({
+                    user: decoded.sub,
+                    token,
+                    type: UserTokenTypeEnum.REFRESH,
+                })
+                .populate('user').lean();
+            if (!userToken) {
+                return { verified: false };
+            }
+            return { verified: true, user: userToken.user};
+        } catch (error) {
+            return { verified: false };
+        }
     }
 }
